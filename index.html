@@ -938,34 +938,12 @@
     if (imgBox) imgBox.classList.add('animate-cat-hop');
   }
 }
-document.getElementById('shareXBtn')?.addEventListener('click', async () => {
-  if (!currentResultChar) return;
-  const { char } = currentResultChar;
-  const shareText = '【にゃんこ大戦争風キャラ診断】\n私のキャラは『' + char.name + '』（' + char.displayRarity + '）でした‼️\n\n#にゃんこキャラ診断 #にゃんこ大戦争';
-  showToast('📸 結果画面のスクショを作成中にゃ…');
-  try {
-    const canvas = await captureResultCanvas();
-    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-    const file = new File([blob], 'nyanko_result.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ text: shareText, files: [file] });
-      return;
-    }
-    let copied = false;
-    if (navigator.clipboard && window.ClipboardItem) {
-      try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); copied = true; } catch (e) {}
-    }
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'nyanko_' + char.name + '.png';
-    a.click();
-    showToast(copied ? '📋 画像をコピーしました！Xの画面で「貼り付け(Ctrl+V)」してにゃ！' : '💾 スクショ画像を保存しました！Xに添付してポストしてにゃ！');
-    setTimeout(() => {
-      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText), '_blank', 'noopener,noreferrer');
-    }, 900);
-  } catch (e) {
-    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText), '_blank', 'noopener,noreferrer');
-  }
+document.getElementById('shareXBtn')?.addEventListener('click', () => {
+    if (!currentResultChar) return;
+    const { char } = currentResultChar;
+    const shareText = `【にゃんこ大戦争風キャラ診断】\nあなたのキャラは『${char.name}』（${char.displayRarity}）です‼️\n💡性格：${char.traits}\n\nhttps://soranko184.github.io/nyanko_shindan_10181050/\n#にゃんこキャラ診断 #にゃんこ大戦争`;
+    const url = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
 });
 document.getElementById('copyResultBtn')?.addEventListener('click', async () => {
   if (!currentResultChar) return;
